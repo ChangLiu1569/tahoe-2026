@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Tahoe '26" />
 <title>Tahoe '26 · Trip Dossier</title>
+<script>try{var l=localStorage.getItem('tahoe-lang');if(l==='zh'){document.documentElement.setAttribute('data-lang','zh');document.documentElement.lang='zh-CN';}}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -17,9 +18,10 @@
     --depth:#06262e; --lake:#0c5563; --lake-2:#10788a;
     --surface:#eef3f2; --snow:#ffffff; --ink:#0c2429; --granite:#5f747a;
     --line:#d8e3e1; --blaze:#ef5a2a; --blaze-soft:#fdeadf; --pine:#1f7a54;
-    --display:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    --mono:'Space Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
-    --body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --cjk:'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC';
+    --display:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',var(--cjk),sans-serif;
+    --mono:'Space Mono',ui-monospace,'SFMono-Regular',Menlo,var(--cjk),monospace;
+    --body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,var(--cjk),sans-serif;
     --pad:clamp(16px,4.5vw,22px);
     --shadow:0 1px 2px rgba(6,38,46,.05), 0 10px 26px rgba(6,38,46,.07);
     --barH:96px;
@@ -34,6 +36,11 @@
   h1,h2,h3{font-family:var(--display); font-weight:600; letter-spacing:-.015em; margin:0}
   button{font-family:inherit}
 
+  /* language toggle visibility */
+  [data-lang="en"] .zh{display:none}
+  [data-lang="zh"] .en{display:none}
+  [data-lang="zh"] .lead, [data-lang="zh"] .card p, [data-lang="zh"] .note p{line-height:1.7}
+
   .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--granite); margin:0}
   .wpt{font-family:var(--mono); font-weight:700; font-size:13px; color:var(--blaze); letter-spacing:.1em}
 
@@ -45,7 +52,9 @@
   }
   .brand{display:flex; align-items:center; gap:9px; font-family:var(--display); font-weight:700; font-size:16px; color:var(--ink)}
   .brand .tick{width:18px; height:3px; background:var(--blaze); border-radius:2px}
-  .datepill{font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--lake); background:var(--snow); border:1px solid var(--line); padding:6px 11px; border-radius:99px}
+  .langtog{display:flex; gap:2px; background:var(--snow); border:1px solid var(--line); border-radius:99px; padding:3px}
+  .lang{border:0; background:transparent; padding:6px 12px; border-radius:99px; font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--granite); cursor:pointer; transition:color .2s}
+  .lang.active{background:var(--ink); color:#fff}
 
   /* ---------- APP / SCREENS ---------- */
   .app{max-width:680px; margin:0 auto; padding:0 var(--pad) calc(var(--barH) + env(safe-area-inset-bottom)); }
@@ -59,7 +68,7 @@
   .panel-head h2{font-size:clamp(27px,7.5vw,36px); line-height:1.03; letter-spacing:-.025em}
   .lead{color:var(--granite); font-size:15px; max-width:60ch; margin:11px 0 0}
 
-  /* ---------- MINI HERO (Plan) ---------- */
+  /* ---------- MINI HERO ---------- */
   .minihero{
     position:relative; overflow:hidden; isolation:isolate; border-radius:22px; margin-top:18px;
     padding:26px 22px 22px; color:#eaf4f3;
@@ -100,14 +109,14 @@
   .note .label{font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--granite); display:block; margin-bottom:5px}
   .note p{margin:0; font-size:14px; color:#36474c}
 
-  /* ---------- SEGMENTED CONTROL ---------- */
+  /* ---------- SEGMENTED ---------- */
   .segmented{display:flex; gap:4px; background:var(--snow); border:1px solid var(--line); border-radius:13px; padding:4px; margin:18px 0 4px}
   .seg{flex:1; border:0; background:transparent; padding:10px 6px; border-radius:9px; font-family:var(--mono); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--granite); cursor:pointer; transition:color .2s}
   .seg.active{background:var(--ink); color:#fff}
   .seg-panel{display:none}
   .seg-panel.active{display:block; animation:fade .28s ease both}
 
-  /* ---------- ITINERARY DECK ---------- */
+  /* ---------- DECK ---------- */
   .deck-head{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:18px}
   .deck-count{font-family:var(--mono); font-size:13px; color:var(--granite); letter-spacing:.08em}
   .deck-count b{color:var(--ink)}
@@ -124,7 +133,7 @@
   .day-top{padding:18px 20px 15px; border-bottom:1px solid var(--line); position:relative}
   .day-top::before{content:""; position:absolute; left:0; top:0; height:4px; width:100%; background:var(--blaze)}
   .day-no{font-family:var(--display); font-weight:700; font-size:clamp(36px,11vw,52px); line-height:.9; letter-spacing:-.03em; color:var(--ink)}
-  .day-no span{color:var(--blaze)}
+  .day-no b{color:var(--blaze); font-weight:700}
   .day-meta{display:flex; justify-content:space-between; align-items:flex-end; gap:10px; margin-top:6px; flex-wrap:wrap}
   .day-theme{font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--lake)}
   .day-elev{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--granite)}
@@ -134,7 +143,7 @@
   .tl-step:first-child{border-top:0}
   .tl-time{font-family:var(--mono); font-weight:700; font-size:12px; color:var(--blaze); padding-top:2px}
   .tl-what b{display:block; font-size:14.5px; color:var(--ink); font-weight:600}
-  .tl-what span{display:block; font-size:13px; color:var(--granite); margin-top:2px}
+  .tl-what .sub{display:block; font-size:13px; color:var(--granite); margin-top:2px}
   .tl-what .star{color:var(--blaze)}
   .dots{display:flex; gap:8px; justify-content:center; margin-top:16px}
   .dot{width:8px; height:8px; border-radius:50%; border:1.5px solid var(--granite); background:transparent; cursor:pointer; padding:0; transition:all .2s}
@@ -167,7 +176,7 @@
   .cg input{appearance:none; -webkit-appearance:none; width:21px; height:21px; border:1.5px solid var(--granite); border-radius:6px; flex:0 0 auto; margin-top:1px; cursor:pointer; position:relative; transition:all .15s}
   .cg input:checked{background:var(--blaze); border-color:var(--blaze)}
   .cg input:checked::after{content:""; position:absolute; left:6px; top:2px; width:5px; height:10px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg)}
-  .cg input:checked + span{color:var(--granite); text-decoration:line-through}
+  .cg input:checked ~ span{color:var(--granite); text-decoration:line-through}
   .cg li b{color:var(--ink)}
   .reset{margin-top:16px; font-family:var(--mono); font-size:12px; letter-spacing:.06em; background:var(--snow); border:1px solid var(--line); color:var(--granite); padding:11px 15px; border-radius:10px; cursor:pointer; width:100%}
 
@@ -175,7 +184,7 @@
   .endcap .mark{font-family:var(--display); font-weight:700; font-size:18px; color:var(--ink)}
   .endcap p{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; color:var(--granite); margin:7px 0 0}
 
-  /* ---------- BOTTOM TAB BAR ---------- */
+  /* ---------- BOTTOM TABS ---------- */
   .tabbar{
     position:fixed; left:50%; transform:translateX(-50%); bottom:max(12px,env(safe-area-inset-bottom));
     z-index:60; display:flex; gap:2px; width:min(94vw,500px);
@@ -185,26 +194,25 @@
   .tab{flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 2px; border:0; background:transparent; color:var(--granite); border-radius:14px; cursor:pointer; font-family:var(--mono); font-size:9.5px; letter-spacing:.05em; text-transform:uppercase}
   .tab svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
   .tab.active{color:var(--blaze); background:var(--blaze-soft)}
+  [data-lang="zh"] .tab{font-size:11px}
 
-  /* ---------- a11y / motion / print ---------- */
   a:focus-visible, button:focus-visible, input:focus-visible, .deck-track:focus-visible{outline:2.5px solid var(--blaze); outline-offset:3px; border-radius:6px}
-  @media (prefers-reduced-motion: reduce){
-    html{scroll-behavior:auto}
-    *{animation:none !important; transition:none !important}
-  }
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{animation:none !important; transition:none !important} }
   @media print{ .tabbar,.topbar,.map-btns,.arrow,.dots,.swipe-hint,.reset{display:none} .screen{display:block !important} }
 </style>
 </head>
 <body>
 
-<!-- contour definition (shared) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <path id="ring" d="M0,-100 C58,-96 102,-52 96,6 C90,58 48,100 -10,97 C-64,94 -100,50 -96,-8 C-92,-58 -54,-98 0,-100 Z"/>
 </defs></svg>
 
 <header class="topbar">
   <span class="brand"><span class="tick"></span>Tahoe ’26</span>
-  <span class="datepill">JUL 3–5 · 2 CARS</span>
+  <div class="langtog" role="group" aria-label="Language / 语言">
+    <button class="lang active" data-lang="en" aria-pressed="true">EN</button>
+    <button class="lang" data-lang="zh" aria-pressed="false">中文</button>
+  </div>
 </header>
 
 <main class="app">
@@ -213,24 +221,24 @@
   <section class="screen active" id="t-plan" role="tabpanel" aria-label="Plan">
     <div class="minihero">
       <svg class="contours" viewBox="-130 -130 260 260" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2"><use href="#ring" transform="scale(1.25)"/><use href="#ring" transform="scale(1.0)"/><use href="#ring" transform="scale(.76)"/><use href="#ring" transform="scale(.54)"/><use href="#ring" transform="scale(.34)"/></g></svg>
-      <p class="eyebrow">Field dossier · South Lake Tahoe</p>
-      <h1>Three days<br>on the <em>lake</em></h1>
+      <p class="eyebrow"><span class="en">Field dossier · South Lake Tahoe</span><span class="zh">行程档案 · 南太浩湖</span></p>
+      <h1><span class="en">Three days<br>on the <em>lake</em></span><span class="zh"><em>湖畔</em>三日</span></h1>
       <div class="chips"><span>JUL 3–5</span><span>6,237 FT</span><span>~190 MI</span><span>WATER 63°F</span></div>
     </div>
 
     <div class="card">
-      <span class="pill lake">The drive</span>
-      <h3>Berkeley → Sacramento → Tahoe</h3>
-      <p>Both cars meet for 🧋 boba at <b>ChaHalo</b> in Berkeley, lunch in Sacramento, then up US-50 over Echo Summit. ~3.5 hr driving + stops.</p>
-      <p class="addr">MEET: 2041 UNIVERSITY AVE · ≈ 3.5 HR DRIVE · 2 CARS</p>
+      <span class="pill lake"><span class="en">The drive</span><span class="zh">路线</span></span>
+      <h3><span class="en">Berkeley → Sacramento → Tahoe</span><span class="zh">伯克利 → 萨克拉门托 → 太浩湖</span></h3>
+      <p><span class="en">Both cars meet for 🧋 boba at <b>ChaHalo</b> in Berkeley, lunch in Sacramento, then up US-50 over Echo Summit. ~3.5 hr driving + stops.</span><span class="zh">两辆车在伯克利的 <b>ChaHalo</b> 集合喝🧋奶茶，到萨克拉门托吃午饭，再走 US-50 翻越 Echo Summit。约 3.5 小时车程加停留。</span></p>
+      <p class="addr"><span class="en">MEET: 2041 UNIVERSITY AVE · ≈ 3.5 HR · 2 CARS</span><span class="zh">集合: 2041 UNIVERSITY AVE · 约 3.5 小时 · 2 辆车</span></p>
       <div class="links">
-        <a class="btn solid" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/2041+University+Ave,+Berkeley,+CA+94704/Sacramento,+CA/1096+Industrial+Ave,+South+Lake+Tahoe,+CA+96150">📍 Open full route</a>
-        <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/ChaHalo+2041+University+Ave+Berkeley">🧋 Meetup</a>
+        <a class="btn solid" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/2041+University+Ave,+Berkeley,+CA+94704/Sacramento,+CA/1096+Industrial+Ave,+South+Lake+Tahoe,+CA+96150">📍 <span class="en">Open full route</span><span class="zh">查看完整路线</span></a>
+        <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/ChaHalo+2041+University+Ave+Berkeley">🧋 <span class="en">Meetup</span><span class="zh">集合点</span></a>
       </div>
     </div>
 
     <div class="deck-head">
-      <div style="display:flex; align-items:center; gap:10px"><span class="wpt">ITINERARY</span><span class="deck-count"><b id="dCur">01</b> / 03</span></div>
+      <div style="display:flex; align-items:center; gap:10px"><span class="wpt"><span class="en">ITINERARY</span><span class="zh">行程</span></span><span class="deck-count"><b id="dCur">01</b> / 03</span></div>
       <div class="deck-ctrl">
         <button class="arrow" id="dPrev" aria-label="Previous day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
         <button class="arrow" id="dNext" aria-label="Next day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
@@ -241,52 +249,52 @@
       <article class="day" aria-label="Day 1, Friday July 3">
         <svg class="contours" viewBox="-120 -120 240 240" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.3"><use href="#ring" transform="scale(1.0)"/><use href="#ring" transform="scale(.7)"/><use href="#ring" transform="scale(.42)"/></g></svg>
         <div class="day-top">
-          <div class="day-no">Day <span>01</span></div>
-          <div class="day-meta"><span class="day-theme">Fri · Travel</span><span class="day-elev">Sea level → 6,237 ft</span></div>
-          <div class="day-route">Berkeley → Sacramento → Tahoe · ~190 mi</div>
+          <div class="day-no"><span class="en">Day <b>01</b></span><span class="zh">第 <b>01</b> 天</span></div>
+          <div class="day-meta"><span class="day-theme"><span class="en">Fri · Travel</span><span class="zh">周五 · 出发</span></span><span class="day-elev"><span class="en">Sea level → 6,237 ft</span><span class="zh">海平面 → 6,237 ft</span></span></div>
+          <div class="day-route"><span class="en">Berkeley → Sacramento → Tahoe · ~190 mi</span><span class="zh">伯克利 → 萨城 → 太浩湖 · ~190 mi</span></div>
         </div>
         <div class="day-body">
-          <div class="tl-step"><div class="tl-time">9:00a</div><div class="tl-what"><b>Both cars roll out</b><span>SF + Santa Clara aim for Berkeley.</span></div></div>
-          <div class="tl-step"><div class="tl-time">10:00a</div><div class="tl-what"><b>🧋 Boba @ ChaHalo</b><span>2041 University Ave — regroup, gas, bathroom, boba to-go.</span></div></div>
-          <div class="tl-step"><div class="tl-time">10:45a</div><div class="tl-what"><b>→ Sacramento</b><span>I-80 E · ~1 hr 20.</span></div></div>
-          <div class="tl-step"><div class="tl-time">12:15p</div><div class="tl-what"><b>🍴 Lunch + gas</b><span>See the Food tab. Fill up here — cheaper.</span></div></div>
-          <div class="tl-step"><div class="tl-time">1:45p</div><div class="tl-what"><b>US-50 E to Tahoe</b><span>Over Echo Summit · ~2 hr.</span></div></div>
-          <div class="tl-step"><div class="tl-time">3:45p</div><div class="tl-what"><b>🏠 Check in near the Y</b><span>Unload, claim beds, beach mode.</span></div></div>
-          <div class="tl-step"><div class="tl-time">4:30p</div><div class="tl-what"><b>🛒 Grocery run</b><span>Raley's is 5 min. Dinner + breakfast.</span></div></div>
-          <div class="tl-step"><div class="tl-time">7:00p</div><div class="tl-what"><b>🍳 Cook-in + sunset</b><span>Easy night, walk to Lakeview Commons.</span></div></div>
+          <div class="tl-step"><div class="tl-time">9:00a</div><div class="tl-what"><b><span class="en">Both cars roll out</span><span class="zh">两车出发</span></b><span class="sub"><span class="en">SF + Santa Clara aim for Berkeley.</span><span class="zh">SF + 圣克拉拉 前往伯克利。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">10:00a</div><div class="tl-what"><b><span class="en">🧋 Boba @ ChaHalo</span><span class="zh">🧋 ChaHalo 喝奶茶</span></b><span class="sub"><span class="en">2041 University Ave — regroup, gas, bathroom, boba to-go.</span><span class="zh">2041 University Ave——集合、加油、洗手间、打包奶茶。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">10:45a</div><div class="tl-what"><b><span class="en">→ Sacramento</span><span class="zh">→ 萨克拉门托</span></b><span class="sub"><span class="en">I-80 E · ~1 hr 20.</span><span class="zh">I-80 E · 约 1 小时 20 分。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">12:15p</div><div class="tl-what"><b><span class="en">🍴 Lunch + gas</span><span class="zh">🍴 午饭 + 加油</span></b><span class="sub"><span class="en">See the Food tab. Fill up here — cheaper.</span><span class="zh">见「美食」页。在这加满油更便宜。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">1:45p</div><div class="tl-what"><b><span class="en">US-50 E to Tahoe</span><span class="zh">US-50 E 上太浩湖</span></b><span class="sub"><span class="en">Over Echo Summit · ~2 hr.</span><span class="zh">翻越 Echo Summit · 约 2 小时。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">3:45p</div><div class="tl-what"><b><span class="en">🏠 Check in near the Y</span><span class="zh">🏠 在 Y 路口附近入住</span></b><span class="sub"><span class="en">Unload, claim beds, beach mode.</span><span class="zh">卸行李、占床位、换上玩水装备。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">4:30p</div><div class="tl-what"><b><span class="en">🛒 Grocery run</span><span class="zh">🛒 采购食材</span></b><span class="sub"><span class="en">Raley's is 5 min. Dinner + breakfast.</span><span class="zh">Raley's 5 分钟车程。买晚饭 + 早饭。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">7:00p</div><div class="tl-what"><b><span class="en">🍳 Cook-in + sunset</span><span class="zh">🍳 自己做饭 + 看日落</span></b><span class="sub"><span class="en">Easy night, walk to Lakeview Commons.</span><span class="zh">轻松的一晚，散步去 Lakeview Commons。</span></span></div></div>
         </div>
       </article>
 
       <article class="day" aria-label="Day 2, Saturday July 4">
         <svg class="contours" viewBox="-120 -120 240 240" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.3"><use href="#ring" transform="scale(1.0)"/><use href="#ring" transform="scale(.7)"/><use href="#ring" transform="scale(.42)"/></g></svg>
         <div class="day-top">
-          <div class="day-no">Day <span>02</span></div>
-          <div class="day-meta"><span class="day-theme">Sat · Lake day 🎆</span><span class="day-elev">Lake level 6,225 ft</span></div>
-          <div class="day-route">Paddle by morning · fireworks by night</div>
+          <div class="day-no"><span class="en">Day <b>02</b></span><span class="zh">第 <b>02</b> 天</span></div>
+          <div class="day-meta"><span class="day-theme"><span class="en">Sat · Lake day 🎆</span><span class="zh">周六 · 玩水 🎆</span></span><span class="day-elev"><span class="en">Lake level 6,225 ft</span><span class="zh">湖面 6,225 ft</span></span></div>
+          <div class="day-route"><span class="en">Paddle by morning · fireworks by night</span><span class="zh">上午划桨 · 夜晚烟花</span></div>
         </div>
         <div class="day-body">
-          <div class="tl-step"><div class="tl-time">8:30a</div><div class="tl-what"><b>Big breakfast</b><span>Sunscreen before you leave.</span></div></div>
-          <div class="tl-step"><div class="tl-time">9:00a</div><div class="tl-what"><b>🎺 Parade (optional)</b><span>From Ski Run Blvd, heading west.</span></div></div>
-          <div class="tl-step"><div class="tl-time">10:00a</div><div class="tl-what"><b>🛶 Grab boards · launch</b><span>Pope or Baldwin Beach. Go early.</span></div></div>
-          <div class="tl-step"><div class="tl-time">1:00p</div><div class="tl-what"><b>Picnic + swim</b><span>Reapply sunscreen.</span></div></div>
-          <div class="tl-step"><div class="tl-time">4:30p</div><div class="tl-what"><b>Back to base · grill</b><span>Beat the crowds, eat early.</span></div></div>
-          <div class="tl-step"><div class="tl-time">7:30p</div><div class="tl-what"><b>Walk to a viewing spot</b><span>El Dorado, Regan, or Nevada Beach.</span></div></div>
-          <div class="tl-step"><div class="tl-time">9:45p</div><div class="tl-what"><b><span class="star">★</span> Lights on the Lake</b><span>Top-5 U.S. show. Stream the synced audio.</span></div></div>
+          <div class="tl-step"><div class="tl-time">8:30a</div><div class="tl-what"><b><span class="en">Big breakfast</span><span class="zh">丰盛早餐</span></b><span class="sub"><span class="en">Sunscreen before you leave.</span><span class="zh">出门前先涂防晒。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">9:00a</div><div class="tl-what"><b><span class="en">🎺 Parade (optional)</span><span class="zh">🎺 游行（可选）</span></b><span class="sub"><span class="en">From Ski Run Blvd, heading west.</span><span class="zh">从 Ski Run Blvd 出发，向西。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">10:00a</div><div class="tl-what"><b><span class="en">🛶 Grab boards · launch</span><span class="zh">🛶 取桨板 · 下水</span></b><span class="sub"><span class="en">Pope or Baldwin Beach. Go early.</span><span class="zh">去 Pope 或 Baldwin 海滩。趁早。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">1:00p</div><div class="tl-what"><b><span class="en">Picnic + swim</span><span class="zh">野餐 + 游泳</span></b><span class="sub"><span class="en">Reapply sunscreen.</span><span class="zh">记得补涂防晒。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">4:30p</div><div class="tl-what"><b><span class="en">Back to base · grill</span><span class="zh">回大本营 · 烧烤</span></b><span class="sub"><span class="en">Beat the crowds, eat early.</span><span class="zh">避开人潮，早点吃。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">7:30p</div><div class="tl-what"><b><span class="en">Walk to a viewing spot</span><span class="zh">步行去观赏点</span></b><span class="sub"><span class="en">El Dorado, Regan, or Nevada Beach.</span><span class="zh">El Dorado、Regan 或 Nevada 海滩。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">9:45p</div><div class="tl-what"><b><span class="star">★</span> <span class="en">Lights on the Lake</span><span class="zh">湖上烟花秀</span></b><span class="sub"><span class="en">Top-5 U.S. show. Stream the synced audio.</span><span class="zh">全美前五的烟花秀。手机收听同步配乐。</span></span></div></div>
         </div>
       </article>
 
       <article class="day" aria-label="Day 3, Sunday July 5">
         <svg class="contours" viewBox="-120 -120 240 240" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.3"><use href="#ring" transform="scale(1.0)"/><use href="#ring" transform="scale(.7)"/><use href="#ring" transform="scale(.42)"/></g></svg>
         <div class="day-top">
-          <div class="day-no">Day <span>03</span></div>
-          <div class="day-meta"><span class="day-theme">Sun · Homeward</span><span class="day-elev">6,237 ft → home</span></div>
-          <div class="day-route">One last view, then US-50 W → I-80 W</div>
+          <div class="day-no"><span class="en">Day <b>03</b></span><span class="zh">第 <b>03</b> 天</span></div>
+          <div class="day-meta"><span class="day-theme"><span class="en">Sun · Homeward</span><span class="zh">周日 · 返程</span></span><span class="day-elev"><span class="en">6,237 ft → home</span><span class="zh">6,237 ft → 回家</span></span></div>
+          <div class="day-route"><span class="en">One last view, then US-50 W → I-80 W</span><span class="zh">最后看一眼，走 US-50 W → I-80 W</span></div>
         </div>
         <div class="day-body">
-          <div class="tl-step"><div class="tl-time">8:30a</div><div class="tl-what"><b>Breakfast + pack</b><span>Clean up, check under the beds.</span></div></div>
-          <div class="tl-step"><div class="tl-time">9:30a</div><div class="tl-what"><b>🌅 One last Tahoe thing</b><span>Emerald Bay, Pope Estate, or a paddle.</span></div></div>
-          <div class="tl-step"><div class="tl-time">11:30a</div><div class="tl-what"><b>Check out · return rentals</b><span>Drop boards, gas up.</span></div></div>
-          <div class="tl-step"><div class="tl-time">12:00p</div><div class="tl-what"><b>Drive home</b><span>Leave by noon to beat traffic.</span></div></div>
+          <div class="tl-step"><div class="tl-time">8:30a</div><div class="tl-what"><b><span class="en">Breakfast + pack</span><span class="zh">早餐 + 收拾</span></b><span class="sub"><span class="en">Clean up, check under the beds.</span><span class="zh">打扫，检查床底。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">9:30a</div><div class="tl-what"><b><span class="en">🌅 One last Tahoe thing</span><span class="zh">🌅 太浩湖最后一站</span></b><span class="sub"><span class="en">Emerald Bay, Pope Estate, or a paddle.</span><span class="zh">翡翠湾、Pope 庄园，或再划一次桨。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">11:30a</div><div class="tl-what"><b><span class="en">Check out · return rentals</span><span class="zh">退房 · 还装备</span></b><span class="sub"><span class="en">Drop boards, gas up.</span><span class="zh">还桨板，加满油。</span></span></div></div>
+          <div class="tl-step"><div class="tl-time">12:00p</div><div class="tl-what"><b><span class="en">Drive home</span><span class="zh">开车回家</span></b><span class="sub"><span class="en">Leave by noon to beat traffic.</span><span class="zh">中午前出发避开拥堵。</span></span></div></div>
         </div>
       </article>
     </div>
@@ -296,14 +304,14 @@
       <button class="dot" aria-label="Day 2"></button>
       <button class="dot" aria-label="Day 3"></button>
     </div>
-    <p class="swipe-hint">← swipe / arrow keys →</p>
+    <p class="swipe-hint"><span class="en">← swipe / arrow keys →</span><span class="zh">← 滑动 / 方向键 →</span></p>
 
     <div class="card">
-      <span class="pill closest">Basecamp</span>
-      <h3>🏠 Near 1096 Industrial Ave</h3>
-      <p>Right by the “Y.” 5 min to Raley's, 3 min to paddle rentals, 6–12 min to the beaches.</p>
-      <p style="font-size:13.5px"><b>🐻 Bear country:</b> keep food inside, lock the cars, never leave coolers out overnight.</p>
-      <div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/1096+Industrial+Ave,+South+Lake+Tahoe,+CA+96150">📍 Map the base</a></div>
+      <span class="pill closest"><span class="en">Basecamp</span><span class="zh">大本营</span></span>
+      <h3><span class="en">🏠 Near 1096 Industrial Ave</span><span class="zh">🏠 1096 Industrial Ave 附近</span></h3>
+      <p><span class="en">Right by the “Y.” 5 min to Raley's, 3 min to paddle rentals, 6–12 min to the beaches.</span><span class="zh">就在「Y 路口」旁。到 Raley's 5 分钟，到桨板租赁 3 分钟，到各海滩 6–12 分钟。</span></p>
+      <p style="font-size:13.5px"><span class="en"><b>🐻 Bear country:</b> keep food inside, lock the cars, never leave coolers out overnight.</span><span class="zh"><b>🐻 黑熊出没：</b>食物放室内，锁好车，冰箱和食物别过夜留在车里。</span></p>
+      <div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/1096+Industrial+Ave,+South+Lake+Tahoe,+CA+96150">📍 <span class="en">Map the base</span><span class="zh">大本营地图</span></a></div>
     </div>
   </section>
 
@@ -311,43 +319,44 @@
   <section class="screen" id="t-map" role="tabpanel" aria-label="Map">
     <div class="panel-head">
       <div class="top"><span class="wpt">WPT · MAP</span></div>
-      <h2>The whole basin</h2>
-      <p class="lead">Tap a pin for details + one-tap directions. Use the layers control (top-right) to toggle categories.</p>
+      <h2><span class="en">The whole basin</span><span class="zh">整个湖区</span></h2>
+      <p class="lead"><span class="en">Tap a pin for details + one-tap directions. Use the layers control (top-right) to toggle categories.</span><span class="zh">点按图钉查看详情和一键导航。用右上角的图层控件切换类别。</span></p>
     </div>
     <div class="map-btns">
-      <button class="btn" data-z="tahoe">🏔️ Tahoe</button>
-      <button class="btn" data-z="sac">🏙️ Sacramento</button>
-      <button class="btn" data-z="berkeley">🧋 Berkeley</button>
-      <button class="btn solid" data-z="all">🗺️ Route</button>
+      <button class="btn" data-z="tahoe">🏔️ <span class="en">Tahoe</span><span class="zh">太浩湖</span></button>
+      <button class="btn" data-z="sac">🏙️ <span class="en">Sacramento</span><span class="zh">萨城</span></button>
+      <button class="btn" data-z="berkeley">🧋 <span class="en">Berkeley</span><span class="zh">伯克利</span></button>
+      <button class="btn solid" data-z="all">🗺️ <span class="en">Route</span><span class="zh">全程</span></button>
     </div>
-    <div id="map" style="margin-top:14px"></div>
-    <p class="legend">🏠 base · 🛶 paddle · 🛒 grocery · 🏖️ beach · 🏔️ views · 🎆 fireworks · 🍴 lunch · 🧋 meetup<br>Map needs a connection; the rest works offline.</p>
+    <div id="map"></div>
+    <p class="legend"><span class="en">🏠 base · 🛶 paddle · 🛒 grocery · 🏖️ beach · 🏔️ views · 🎆 fireworks · 🍴 lunch · 🧋 meetup<br>Map needs a connection; the rest works offline.</span><span class="zh">🏠 大本营 · 🛶 桨板 · 🛒 超市 · 🏖️ 海滩 · 🏔️ 观景 · 🎆 烟花 · 🍴 午餐 · 🧋 集合<br>地图需联网；其余内容可离线使用。</span></p>
   </section>
 
   <!-- ============ FOOD ============ -->
   <section class="screen" id="t-food" role="tabpanel" aria-label="Food">
     <div class="panel-head">
       <div class="top"><span class="wpt">WPT · FOOD</span></div>
-      <h2>Eat &amp; stock up</h2>
+      <h2><span class="en">Eat &amp; stock up</span><span class="zh">吃饭 &amp; 采购</span></h2>
     </div>
     <div class="segmented" data-seg="food">
-      <button class="seg active" data-target="food-sac" aria-selected="true">On the way</button>
-      <button class="seg" data-target="food-tahoe" aria-selected="false">In Tahoe</button>
+      <button class="seg active" data-target="food-sac" aria-selected="true"><span class="en">On the way</span><span class="zh">途中</span></button>
+      <button class="seg" data-target="food-tahoe" aria-selected="false"><span class="en">In Tahoe</span><span class="zh">在太浩湖</span></button>
     </div>
     <div class="seg-panel active" id="food-sac">
-      <p class="lead" style="margin-top:14px">Lunch in Sacramento — all easy on/off US-50. Pick a vibe, then gas up.</p>
-      <div class="card"><span class="pill lake">Patio</span><h3>Tower Cafe</h3><p>Leafy patio, eclectic global menu. Group-friendly.</p><p class="addr">1518 BROADWAY</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Tower+Cafe+1518+Broadway+Sacramento">📍 Map</a></div></div>
-      <div class="card"><span class="pill lake">Historic</span><h3>Old Sacramento Waterfront</h3><p>Boardwalks + Delta King riverboat. Many options, good leg-stretch.</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Old+Sacramento+Waterfront+restaurants">📍 Map</a></div></div>
-      <div class="card"><span class="pill note">Burgers</span><h3>Squeeze Inn</h3><p>Sacramento legend — burgers with a crispy “cheese skirt.” Fast.</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Squeeze+Inn+Sacramento">📍 Map</a></div></div>
-      <div class="card"><span class="pill pine">Mexican</span><h3>Zócalo</h3><p>Bright, upbeat, big patio. Walkable Midtown.</p><p class="addr">1801 CAPITOL AVE</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Zocalo+1801+Capitol+Ave+Sacramento">📍 Map</a></div></div>
-      <div class="card"><span class="pill lake">Sushi · quick</span><h3>Mikuni / Midtown halls</h3><p>Sushi or quick variety; everyone grabs something different.</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Mikuni+Sushi+Midtown+Sacramento">📍 Map</a></div></div>
+      <p class="lead" style="margin-top:14px"><span class="en">Lunch in Sacramento — all easy on/off US-50. Pick a vibe, then gas up.</span><span class="zh">萨克拉门托午餐——都在 US-50 沿线，进出方便。选个喜欢的，然后加满油。</span></p>
+      <div class="card"><span class="pill lake"><span class="en">Patio</span><span class="zh">露台</span></span><h3>Tower Cafe</h3><p><span class="en">Leafy patio, eclectic global menu. Group-friendly.</span><span class="zh">绿意露台，融合各国菜系。适合多人。</span></p><p class="addr">1518 BROADWAY</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Tower+Cafe+1518+Broadway+Sacramento">📍 <span class="en">Map</span><span class="zh">地图</span></a></div></div>
+      <div class="card"><span class="pill lake"><span class="en">Historic</span><span class="zh">历史街区</span></span><h3>Old Sacramento Waterfront</h3><p><span class="en">Boardwalks + Delta King riverboat. Many options, good leg-stretch.</span><span class="zh">木栈道 + Delta King 游船。选择多，适合走走。</span></p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Old+Sacramento+Waterfront+restaurants">📍 <span class="en">Map</span><span class="zh">地图</span></a></div></div>
+      <div class="card"><span class="pill lake"><span class="en">Seafood · River</span><span class="zh">海鲜 · 河畔</span></span><h3>Joe's Crab Shack</h3><p><span class="en">Riverfront seafood in Old Sacramento — crab buckets, fried baskets, lively patio.</span><span class="zh">老萨城河畔海鲜——蟹桶、炸物拼盘、热闹的露台。</span></p><p class="addr">1210 FRONT ST</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Joe%27s+Crab+Shack+1210+Front+St+Sacramento">📍 <span class="en">Map</span><span class="zh">地图</span></a></div></div>
+      <div class="card"><span class="pill note"><span class="en">Burgers</span><span class="zh">汉堡</span></span><h3>Squeeze Inn</h3><p><span class="en">Sacramento legend — burgers with a crispy “cheese skirt.” Fast.</span><span class="zh">萨城传奇——带脆「芝士裙边」的汉堡。出餐快。</span></p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Squeeze+Inn+Sacramento">📍 <span class="en">Map</span><span class="zh">地图</span></a></div></div>
+      <div class="card"><span class="pill pine"><span class="en">Mexican</span><span class="zh">墨西哥菜</span></span><h3>Zócalo</h3><p><span class="en">Bright, upbeat, big patio. Walkable Midtown.</span><span class="zh">明亮欢快，大露台。Midtown 步行可达。</span></p><p class="addr">1801 CAPITOL AVE</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Zocalo+1801+Capitol+Ave+Sacramento">📍 <span class="en">Map</span><span class="zh">地图</span></a></div></div>
+      <div class="card"><span class="pill lake"><span class="en">Sushi · quick</span><span class="zh">寿司 · 快捷</span></span><h3>Mikuni / Midtown halls</h3><p><span class="en">Sushi or quick variety; everyone grabs something different.</span><span class="zh">寿司或多样快餐，各取所需。</span></p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Mikuni+Sushi+Midtown+Sacramento">📍 <span class="en">Map</span><span class="zh">地图</span></a></div></div>
     </div>
     <div class="seg-panel" id="food-tahoe">
-      <p class="lead" style="margin-top:14px">You're cooking — big shop on arrival night, quick top-ups after.</p>
-      <div class="card"><span class="pill closest">Closest</span><h3>Raley's</h3><p>Full supermarket at the Y — best for the big shop. ~5 min from base.</p><p class="addr">4000 LAKE TAHOE BLVD</p><div class="links"><a class="btn solid" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Raley%27s+4000+Lake+Tahoe+Blvd+South+Lake+Tahoe">📍 Map</a></div></div>
-      <div class="card"><span class="pill lake">Big + pharmacy</span><h3>Safeway</h3><p>Large store, pharmacy, order-ahead pickup. Off Al Tahoe Blvd.</p><p class="addr">1020 JOHNSON LN</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Safeway+1020+Johnson+Ln+South+Lake+Tahoe">📍 Map</a><a class="btn" target="_blank" rel="noopener" href="https://local.safeway.com/safeway/ca/south-lake-tahoe.html">🌐 Order</a></div></div>
-      <div class="card"><span class="pill note">Budget</span><h3>Grocery Outlet &amp; Save Mart</h3><p>Cheaper staples, snacks, and drinks for a crowd.</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/grocery+store+South+Lake+Tahoe">📍 Map all</a></div></div>
-      <div class="note pine"><span class="label">Shopping play</span><p>Buy snacks &amp; drinks cheaper in Sacramento; get only fresh stuff + ice in Tahoe. Grab a foam cooler for beach picnics.</p></div>
+      <p class="lead" style="margin-top:14px"><span class="en">You're cooking — big shop on arrival night, quick top-ups after.</span><span class="zh">你们要自己做饭——抵达当晚大采购，之后随时补货。</span></p>
+      <div class="card"><span class="pill closest"><span class="en">Closest</span><span class="zh">最近</span></span><h3>Raley's</h3><p><span class="en">Full supermarket at the Y — best for the big shop. ~5 min from base.</span><span class="zh">Y 路口的大超市——大采购首选。离大本营约 5 分钟。</span></p><p class="addr">4000 LAKE TAHOE BLVD</p><div class="links"><a class="btn solid" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Raley%27s+4000+Lake+Tahoe+Blvd+South+Lake+Tahoe">📍 <span class="en">Map</span><span class="zh">地图</span></a></div></div>
+      <div class="card"><span class="pill lake"><span class="en">Big + pharmacy</span><span class="zh">大店 + 药房</span></span><h3>Safeway</h3><p><span class="en">Large store, pharmacy, order-ahead pickup. Off Al Tahoe Blvd.</span><span class="zh">大型超市，有药房，可网上下单自取。在 Al Tahoe Blvd 旁。</span></p><p class="addr">1020 JOHNSON LN</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Safeway+1020+Johnson+Ln+South+Lake+Tahoe">📍 <span class="en">Map</span><span class="zh">地图</span></a><a class="btn" target="_blank" rel="noopener" href="https://local.safeway.com/safeway/ca/south-lake-tahoe.html">🌐 <span class="en">Order</span><span class="zh">网订</span></a></div></div>
+      <div class="card"><span class="pill note"><span class="en">Budget</span><span class="zh">实惠</span></span><h3>Grocery Outlet &amp; Save Mart</h3><p><span class="en">Cheaper staples, snacks, and drinks for a crowd.</span><span class="zh">更便宜的主食、零食和饮料，适合多人。</span></p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/grocery+store+South+Lake+Tahoe">📍 <span class="en">Map all</span><span class="zh">全部地图</span></a></div></div>
+      <div class="note pine"><span class="label"><span class="en">Shopping play</span><span class="zh">采购小贴士</span></span><p><span class="en">Buy snacks &amp; drinks cheaper in Sacramento; get only fresh stuff + ice in Tahoe. Grab a foam cooler for beach picnics.</span><span class="zh">零食饮料在萨城买更便宜；到太浩湖只买生鲜 + 冰。买个泡沫冰盒方便海滩野餐。</span></p></div>
     </div>
   </section>
 
@@ -355,53 +364,53 @@
   <section class="screen" id="t-lake" role="tabpanel" aria-label="Lake">
     <div class="panel-head">
       <div class="top"><span class="wpt">WPT · LAKE</span></div>
-      <h2>On the water</h2>
+      <h2><span class="en">On the water</span><span class="zh">玩水</span></h2>
     </div>
     <div class="segmented" data-seg="lake">
-      <button class="seg active" data-target="lake-paddle" aria-selected="true">Paddle</button>
-      <button class="seg" data-target="lake-beaches" aria-selected="false">Beaches</button>
-      <button class="seg" data-target="lake-july4" aria-selected="false">July 4th</button>
+      <button class="seg active" data-target="lake-paddle" aria-selected="true"><span class="en">Paddle</span><span class="zh">桨板</span></button>
+      <button class="seg" data-target="lake-beaches" aria-selected="false"><span class="en">Beaches</span><span class="zh">海滩</span></button>
+      <button class="seg" data-target="lake-july4" aria-selected="false"><span class="en">July 4th</span><span class="zh">独立日</span></button>
     </div>
 
     <div class="seg-panel active" id="lake-paddle">
-      <p class="lead" style="margin-top:14px">Book ahead for the holiday — boards sell out. ~$25–45/hr or ~$50+/day.</p>
-      <div class="card"><span class="pill closest">Closest</span><h3>SUP Tahoe</h3><p>By the Y. Paddle, life jacket &amp; leash included — and they fit your car with a rack.</p><p class="addr">871 EMERALD BAY RD</p><div class="links"><a class="btn solid" target="_blank" rel="noopener" href="https://www.supsouthlaketahoe.com/rentals">🌐 Book</a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/SUP+Tahoe+871+Emerald+Bay+Rd+South+Lake+Tahoe">📍 Map</a></div></div>
-      <div class="card"><span class="pill lake">On the sand</span><h3>South Tahoe Kayak</h3><p>Kiosk on Lakeview Commons beach — rent &amp; launch in one spot.</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://southtahoekayak.com/rentals/">🌐 Rentals</a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Lakeview+Commons+Beach+South+Lake+Tahoe">📍 Map</a></div></div>
-      <div class="card"><span class="pill lake">On the sand</span><h3>Kayak Tahoe</h3><p>Sit-on-top kayaks &amp; SUPs for all levels at El Dorado Beach.</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://kayaktahoe.com/">🌐 Website</a></div></div>
-      <div class="card"><span class="pill note">Delivered</span><h3>Tahoe Adventure Co.</h3><p>Drops boards &amp; beach gear at your rental — zero hauling.</p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://tahoeadventurecompany.com/rentals/gear-deliveries/">🌐 Delivery</a></div></div>
-      <div class="note lake"><span class="label">Paddle smart</span><p>Go out in the morning before the wind. Life jacket on, leash clipped — the water is ~63°F, so a fall is a real shock. Reapply sunscreen; the glare doubles the burn.</p></div>
+      <p class="lead" style="margin-top:14px"><span class="en">Book ahead for the holiday — boards sell out. ~$25–45/hr or ~$50+/day.</span><span class="zh">假期请提前预订——桨板会租光。约 $25–45/小时 或 $50+/天。</span></p>
+      <div class="card"><span class="pill closest"><span class="en">Closest</span><span class="zh">最近</span></span><h3>SUP Tahoe</h3><p><span class="en">By the Y. Paddle, life jacket &amp; leash included — and they fit your car with a rack.</span><span class="zh">在 Y 路口旁。含桨、救生衣和脚绳——还能给你的车装车顶架。</span></p><p class="addr">871 EMERALD BAY RD</p><div class="links"><a class="btn solid" target="_blank" rel="noopener" href="https://www.supsouthlaketahoe.com/rentals">🌐 <span class="en">Book</span><span class="zh">预订</span></a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/SUP+Tahoe+871+Emerald+Bay+Rd+South+Lake+Tahoe">📍 <span class="en">Map</span><span class="zh">地图</span></a></div></div>
+      <div class="card"><span class="pill lake"><span class="en">On the sand</span><span class="zh">沙滩上</span></span><h3>South Tahoe Kayak</h3><p><span class="en">Kiosk on Lakeview Commons beach — rent &amp; launch in one spot.</span><span class="zh">Lakeview Commons 海滩上的摊位——租了就地下水。</span></p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://southtahoekayak.com/rentals/">🌐 <span class="en">Rentals</span><span class="zh">租赁</span></a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/Lakeview+Commons+Beach+South+Lake+Tahoe">📍 <span class="en">Map</span><span class="zh">地图</span></a></div></div>
+      <div class="card"><span class="pill lake"><span class="en">On the sand</span><span class="zh">沙滩上</span></span><h3>Kayak Tahoe</h3><p><span class="en">Sit-on-top kayaks &amp; SUPs for all levels at El Dorado Beach.</span><span class="zh">El Dorado 海滩，坐式皮划艇和桨板，适合所有水平。</span></p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://kayaktahoe.com/">🌐 <span class="en">Website</span><span class="zh">官网</span></a></div></div>
+      <div class="card"><span class="pill note"><span class="en">Delivered</span><span class="zh">送货上门</span></span><h3>Tahoe Adventure Co.</h3><p><span class="en">Drops boards &amp; beach gear at your rental — zero hauling.</span><span class="zh">把桨板和海滩装备送到你的住处——不用自己搬。</span></p><div class="links"><a class="btn" target="_blank" rel="noopener" href="https://tahoeadventurecompany.com/rentals/gear-deliveries/">🌐 <span class="en">Delivery</span><span class="zh">送货</span></a></div></div>
+      <div class="note lake"><span class="label"><span class="en">Paddle smart</span><span class="zh">划桨小贴士</span></span><p><span class="en">Go out in the morning before the wind. Life jacket on, leash clipped — the water is ~63°F, so a fall is a real shock. Reapply sunscreen; the glare doubles the burn.</span><span class="zh">趁上午起风前下水。穿好救生衣、扣上脚绳——水温约 63°F（17°C），落水会很激。记得补防晒，水面反光会让晒伤加倍。</span></p></div>
     </div>
 
     <div class="seg-panel" id="lake-beaches">
-      <div class="card"><span class="pill lake">Beaches</span><h3>🏖️ Swim &amp; paddle</h3>
+      <div class="card"><span class="pill lake"><span class="en">Beaches</span><span class="zh">海滩</span></span><h3><span class="en">🏖️ Swim &amp; paddle</span><span class="zh">🏖️ 游泳 &amp; 划桨</span></h3>
         <ul class="plain">
-          <li><b>Pope Beach</b> — long sand, pines, grills. (~10 min)</li>
-          <li><b>Baldwin Beach</b> — easy access, Mt. Tallac views. (~12 min)</li>
-          <li><b>El Dorado / Lakeview Commons</b> — in-town, rentals, prime fireworks. (~6 min)</li>
-          <li><b>Nevada Beach</b> — wide NV-side beach, sunset views. (~15 min)</li>
+          <li><span class="en"><b>Pope Beach</b> — long sand, pines, grills. (~10 min)</span><span class="zh"><b>Pope Beach</b>——长沙滩、松树、烧烤架。（约 10 分钟）</span></li>
+          <li><span class="en"><b>Baldwin Beach</b> — easy access, Mt. Tallac views. (~12 min)</span><span class="zh"><b>Baldwin Beach</b>——好进出，可看 Tallac 山。（约 12 分钟）</span></li>
+          <li><span class="en"><b>El Dorado / Lakeview Commons</b> — in-town, rentals, prime fireworks. (~6 min)</span><span class="zh"><b>El Dorado / Lakeview Commons</b>——市区内、有租赁、看烟花最佳。（约 6 分钟）</span></li>
+          <li><span class="en"><b>Nevada Beach</b> — wide NV-side beach, sunset views. (~15 min)</span><span class="zh"><b>Nevada Beach</b>——内华达一侧的宽沙滩，看日落。（约 15 分钟）</span></li>
         </ul>
       </div>
-      <div class="card"><span class="pill pine">Walks &amp; views</span><h3>🥾 Easy legs</h3>
+      <div class="card"><span class="pill pine"><span class="en">Walks &amp; views</span><span class="zh">步道 &amp; 观景</span></span><h3><span class="en">🥾 Easy legs</span><span class="zh">🥾 轻松步道</span></h3>
         <ul class="plain">
-          <li><b>Emerald Bay Overlook</b> — one of CA's most-photographed views. (~20 min)</li>
-          <li><b>Vikingsholm Trail</b> — ~1 mi down to the bay &amp; castle.</li>
-          <li><b>Pope Estate / Tallac</b> — flat, free, shaded stroll.</li>
-          <li><b>Lake of the Sky Trail</b> — short, casual lakeside path.</li>
+          <li><span class="en"><b>Emerald Bay Overlook</b> — one of CA's most-photographed views. (~20 min)</span><span class="zh"><b>翡翠湾观景台</b>——加州最上镜的风景之一。（约 20 分钟）</span></li>
+          <li><span class="en"><b>Vikingsholm Trail</b> — ~1 mi down to the bay &amp; castle.</span><span class="zh"><b>Vikingsholm 步道</b>——约 1 英里下到湖湾和古堡。</span></li>
+          <li><span class="en"><b>Pope Estate / Tallac</b> — flat, free, shaded stroll.</span><span class="zh"><b>Pope 庄园 / Tallac</b>——平坦、免费、有树荫的散步。</span></li>
+          <li><span class="en"><b>Lake of the Sky Trail</b> — short, casual lakeside path.</span><span class="zh"><b>Lake of the Sky 步道</b>——短而轻松的湖边小径。</span></li>
         </ul>
       </div>
-      <p class="legend">Most beaches charge ~$12 parking · open ~8a–8p</p>
+      <p class="legend"><span class="en">Most beaches charge ~$12 parking · open ~8a–8p</span><span class="zh">多数海滩停车约 $12 · 约 8:00–20:00 开放</span></p>
     </div>
 
     <div class="seg-panel" id="lake-july4">
-      <div class="card"><span class="pill closest">★ Main event</span><h3>🎆 Lights on the Lake</h3>
+      <div class="card"><span class="pill closest"><span class="en">★ Main event</span><span class="zh">★ 重头戏</span></span><h3><span class="en">🎆 Lights on the Lake</span><span class="zh">🎆 湖上烟花秀</span></h3>
         <ul class="plain">
-          <li>🕘 <b>Show:</b> ~9:45 PM, choreographed to music</li>
-          <li>📻 <b>Soundtrack:</b> stream the synced audio free on your phone</li>
-          <li>🎺 <b>Parade:</b> 9:00 AM from Ski Run Blvd</li>
-          <li>👀 <b>Free views:</b> El Dorado, Regan Beach, Nevada Beach</li>
+          <li><span class="en">🕘 <b>Show:</b> ~9:45 PM, choreographed to music</span><span class="zh">🕘 <b>时间：</b>约 21:45，配乐编排</span></li>
+          <li><span class="en">📻 <b>Soundtrack:</b> stream the synced audio free on your phone</span><span class="zh">📻 <b>配乐：</b>手机免费收听同步音频</span></li>
+          <li><span class="en">🎺 <b>Parade:</b> 9:00 AM from Ski Run Blvd</span><span class="zh">🎺 <b>游行：</b>上午 9:00，从 Ski Run Blvd 出发</span></li>
+          <li><span class="en">👀 <b>Free views:</b> El Dorado, Regan Beach, Nevada Beach</span><span class="zh">👀 <b>免费观赏点：</b>El Dorado、Regan、Nevada 海滩</span></li>
         </ul>
       </div>
-      <div class="note"><span class="label">Crowd plan</span><p>It's the 4th on a Saturday — big crowds. Claim a spot by early evening, bring layers (~45°F nights), a blanket, and headlamps. Walk from base if you can; budget ~45+ min to get out of parking after.</p></div>
+      <div class="note"><span class="label"><span class="en">Crowd plan</span><span class="zh">人潮对策</span></span><p><span class="en">It's the 4th on a Saturday — big crowds. Claim a spot by early evening, bring layers (~45°F nights), a blanket, and headlamps. Walk from base if you can; budget ~45+ min to get out of parking after.</span><span class="zh">独立日恰逢周六——人很多。傍晚就去占位，带上保暖衣物（夜里约 45°F / 7°C）、毯子和头灯。能走就从大本营走过去；散场后停车场至少要 45 分钟才能出来。</span></p></div>
     </div>
   </section>
 
@@ -409,88 +418,88 @@
   <section class="screen" id="t-pack" role="tabpanel" aria-label="Packing">
     <div class="panel-head">
       <div class="top"><span class="wpt">WPT · PACK</span></div>
-      <h2>Packing checklist</h2>
-      <p class="lead">Tap to check — your progress saves on this device.</p>
+      <h2><span class="en">Packing checklist</span><span class="zh">行李清单</span></h2>
+      <p class="lead"><span class="en">Tap to check — your progress saves on this device.</span><span class="zh">点按勾选——进度会保存在本机。</span></p>
     </div>
 
-    <div class="cg"><div class="cg-head"><div class="t"><h3>☀️ Sun &amp; skin</h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
-      <li><label><input type="checkbox" id="p_sunscreen"><span><b>Sunscreen</b> (SPF 50+) — altitude burns fast</span></label></li>
-      <li><label><input type="checkbox" id="p_lipbalm"><span>SPF lip balm</span></label></li>
-      <li><label><input type="checkbox" id="p_sunglasses"><span>Polarized sunglasses</span></label></li>
-      <li><label><input type="checkbox" id="p_hat"><span>Hat / cap</span></label></li>
-      <li><label><input type="checkbox" id="p_aloe"><span>Aloe / after-sun</span></label></li>
+    <div class="cg"><div class="cg-head"><div class="t"><h3><span class="en">☀️ Sun &amp; skin</span><span class="zh">☀️ 防晒 &amp; 护肤</span></h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
+      <li><label><input type="checkbox" id="p_sunscreen"><span class="en"><b>Sunscreen</b> (SPF 50+) — altitude burns fast</span><span class="zh"><b>防晒霜</b>（SPF 50+）——高海拔晒得快</span></label></li>
+      <li><label><input type="checkbox" id="p_lipbalm"><span class="en">SPF lip balm</span><span class="zh">防晒润唇膏</span></label></li>
+      <li><label><input type="checkbox" id="p_sunglasses"><span class="en">Polarized sunglasses</span><span class="zh">偏光太阳镜</span></label></li>
+      <li><label><input type="checkbox" id="p_hat"><span class="en">Hat / cap</span><span class="zh">帽子</span></label></li>
+      <li><label><input type="checkbox" id="p_aloe"><span class="en">Aloe / after-sun</span><span class="zh">芦荟 / 晒后修复</span></label></li>
     </ul></div>
 
-    <div class="cg"><div class="cg-head"><div class="t"><h3>🛶 Paddle &amp; beach</h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
-      <li><label><input type="checkbox" id="p_swim"><span>Swimsuits</span></label></li>
-      <li><label><input type="checkbox" id="p_towel"><span>Beach towels</span></label></li>
-      <li><label><input type="checkbox" id="p_watershoes"><span>Water shoes / sandals</span></label></li>
-      <li><label><input type="checkbox" id="p_drybag"><span>Dry bag for phone &amp; keys</span></label></li>
-      <li><label><input type="checkbox" id="p_rashguard"><span>Rash guard / light long sleeve</span></label></li>
-      <li><label><input type="checkbox" id="p_chairs"><span>Beach chairs / blanket</span></label></li>
-      <li><label><input type="checkbox" id="p_waterbottle"><span>Reusable water bottles</span></label></li>
+    <div class="cg"><div class="cg-head"><div class="t"><h3><span class="en">🛶 Paddle &amp; beach</span><span class="zh">🛶 桨板 &amp; 海滩</span></h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
+      <li><label><input type="checkbox" id="p_swim"><span class="en">Swimsuits</span><span class="zh">泳衣</span></label></li>
+      <li><label><input type="checkbox" id="p_towel"><span class="en">Beach towels</span><span class="zh">沙滩巾</span></label></li>
+      <li><label><input type="checkbox" id="p_watershoes"><span class="en">Water shoes / sandals</span><span class="zh">涉水鞋 / 凉鞋</span></label></li>
+      <li><label><input type="checkbox" id="p_drybag"><span class="en">Dry bag for phone &amp; keys</span><span class="zh">手机钥匙防水袋</span></label></li>
+      <li><label><input type="checkbox" id="p_rashguard"><span class="en">Rash guard / light long sleeve</span><span class="zh">防晒衣 / 轻薄长袖</span></label></li>
+      <li><label><input type="checkbox" id="p_chairs"><span class="en">Beach chairs / blanket</span><span class="zh">沙滩椅 / 野餐垫</span></label></li>
+      <li><label><input type="checkbox" id="p_waterbottle"><span class="en">Reusable water bottles</span><span class="zh">水壶</span></label></li>
     </ul></div>
 
-    <div class="cg"><div class="cg-head"><div class="t"><h3>👕 Clothing</h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
-      <li><label><input type="checkbox" id="p_layers"><span><b>Warm layer / hoodie</b> — ~45°F nights</span></label></li>
-      <li><label><input type="checkbox" id="p_tshirts"><span>T-shirts &amp; shorts</span></label></li>
-      <li><label><input type="checkbox" id="p_sneakers"><span>Sneakers / hiking shoes</span></label></li>
-      <li><label><input type="checkbox" id="p_pjs"><span>Sleepwear</span></label></li>
-      <li><label><input type="checkbox" id="p_socks"><span>Socks &amp; underwear</span></label></li>
-      <li><label><input type="checkbox" id="p_jacket"><span>Jacket for fireworks night</span></label></li>
+    <div class="cg"><div class="cg-head"><div class="t"><h3><span class="en">👕 Clothing</span><span class="zh">👕 衣物</span></h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
+      <li><label><input type="checkbox" id="p_layers"><span class="en"><b>Warm layer / hoodie</b> — ~45°F nights</span><span class="zh"><b>保暖外套 / 卫衣</b>——夜里约 45°F</span></label></li>
+      <li><label><input type="checkbox" id="p_tshirts"><span class="en">T-shirts &amp; shorts</span><span class="zh">T 恤 &amp; 短裤</span></label></li>
+      <li><label><input type="checkbox" id="p_sneakers"><span class="en">Sneakers / hiking shoes</span><span class="zh">运动鞋 / 徒步鞋</span></label></li>
+      <li><label><input type="checkbox" id="p_pjs"><span class="en">Sleepwear</span><span class="zh">睡衣</span></label></li>
+      <li><label><input type="checkbox" id="p_socks"><span class="en">Socks &amp; underwear</span><span class="zh">袜子 &amp; 内衣</span></label></li>
+      <li><label><input type="checkbox" id="p_jacket"><span class="en">Jacket for fireworks night</span><span class="zh">看烟花的外套</span></label></li>
     </ul></div>
 
-    <div class="cg"><div class="cg-head"><div class="t"><h3>🍳 Cooking &amp; food</h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
-      <li><label><input type="checkbox" id="p_groceries"><span>Meals planned / grocery list</span></label></li>
-      <li><label><input type="checkbox" id="p_cooler"><span>Cooler + ice for picnics</span></label></li>
-      <li><label><input type="checkbox" id="p_coffee"><span>Coffee / tea + filters</span></label></li>
-      <li><label><input type="checkbox" id="p_snacks"><span>Road snacks (buy in Sac)</span></label></li>
-      <li><label><input type="checkbox" id="p_foil"><span>Foil, ziplocks, trash bags</span></label></li>
-      <li><label><input type="checkbox" id="p_bbq"><span>Lighter / matches for the BBQ</span></label></li>
+    <div class="cg"><div class="cg-head"><div class="t"><h3><span class="en">🍳 Cooking &amp; food</span><span class="zh">🍳 做饭 &amp; 食物</span></h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
+      <li><label><input type="checkbox" id="p_groceries"><span class="en">Meals planned / grocery list</span><span class="zh">餐食计划 / 采购清单</span></label></li>
+      <li><label><input type="checkbox" id="p_cooler"><span class="en">Cooler + ice for picnics</span><span class="zh">冰盒 + 冰（野餐用）</span></label></li>
+      <li><label><input type="checkbox" id="p_coffee"><span class="en">Coffee / tea + filters</span><span class="zh">咖啡 / 茶 + 滤纸</span></label></li>
+      <li><label><input type="checkbox" id="p_snacks"><span class="en">Road snacks (buy in Sac)</span><span class="zh">路上零食（萨城买）</span></label></li>
+      <li><label><input type="checkbox" id="p_foil"><span class="en">Foil, ziplocks, trash bags</span><span class="zh">锡纸、保鲜袋、垃圾袋</span></label></li>
+      <li><label><input type="checkbox" id="p_bbq"><span class="en">Lighter / matches for the BBQ</span><span class="zh">打火机 / 火柴（烧烤）</span></label></li>
     </ul></div>
 
-    <div class="cg"><div class="cg-head"><div class="t"><h3>💊 Health</h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
-      <li><label><input type="checkbox" id="p_toiletries"><span>Toothbrush &amp; toiletries</span></label></li>
-      <li><label><input type="checkbox" id="p_meds"><span>Personal meds + ibuprofen</span></label></li>
-      <li><label><input type="checkbox" id="p_dramamine"><span>Dramamine (winding road)</span></label></li>
-      <li><label><input type="checkbox" id="p_bugspray"><span>Bug spray</span></label></li>
-      <li><label><input type="checkbox" id="p_firstaid"><span>Mini first-aid kit</span></label></li>
-      <li><label><input type="checkbox" id="p_hydrate"><span>Electrolyte packets (altitude)</span></label></li>
+    <div class="cg"><div class="cg-head"><div class="t"><h3><span class="en">💊 Health</span><span class="zh">💊 健康</span></h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
+      <li><label><input type="checkbox" id="p_toiletries"><span class="en">Toothbrush &amp; toiletries</span><span class="zh">牙刷 &amp; 洗漱用品</span></label></li>
+      <li><label><input type="checkbox" id="p_meds"><span class="en">Personal meds + ibuprofen</span><span class="zh">个人药品 + 布洛芬</span></label></li>
+      <li><label><input type="checkbox" id="p_dramamine"><span class="en">Dramamine (winding road)</span><span class="zh">晕车药（山路弯）</span></label></li>
+      <li><label><input type="checkbox" id="p_bugspray"><span class="en">Bug spray</span><span class="zh">驱蚊液</span></label></li>
+      <li><label><input type="checkbox" id="p_firstaid"><span class="en">Mini first-aid kit</span><span class="zh">小急救包</span></label></li>
+      <li><label><input type="checkbox" id="p_hydrate"><span class="en">Electrolyte packets (altitude)</span><span class="zh">电解质冲剂（高海拔）</span></label></li>
     </ul></div>
 
-    <div class="cg"><div class="cg-head"><div class="t"><h3>🚗 Car &amp; logistics</h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
-      <li><label><input type="checkbox" id="p_gas"><span>Both cars fueled up</span></label></li>
-      <li><label><input type="checkbox" id="p_phonemount"><span>Phone mount + cables</span></label></li>
-      <li><label><input type="checkbox" id="p_offlinemap"><span>Offline maps downloaded</span></label></li>
-      <li><label><input type="checkbox" id="p_playlist"><span>Road-trip playlist downloaded</span></label></li>
-      <li><label><input type="checkbox" id="p_rental"><span>Rental address + check-in saved</span></label></li>
-      <li><label><input type="checkbox" id="p_paddleres"><span>Paddle board reservation confirmed</span></label></li>
-      <li><label><input type="checkbox" id="p_cash"><span>Cash + cards (parking ~$12)</span></label></li>
-      <li><label><input type="checkbox" id="p_boba"><span>🧋 Boba order ready</span></label></li>
+    <div class="cg"><div class="cg-head"><div class="t"><h3><span class="en">🚗 Car &amp; logistics</span><span class="zh">🚗 车 &amp; 行程</span></h3><span class="pct">0%</span></div><div class="cg-bar"><i></i></div></div><ul>
+      <li><label><input type="checkbox" id="p_gas"><span class="en">Both cars fueled up</span><span class="zh">两辆车都加满油</span></label></li>
+      <li><label><input type="checkbox" id="p_phonemount"><span class="en">Phone mount + cables</span><span class="zh">手机支架 + 充电线</span></label></li>
+      <li><label><input type="checkbox" id="p_offlinemap"><span class="en">Offline maps downloaded</span><span class="zh">下载离线地图</span></label></li>
+      <li><label><input type="checkbox" id="p_playlist"><span class="en">Road-trip playlist downloaded</span><span class="zh">下载路上歌单</span></label></li>
+      <li><label><input type="checkbox" id="p_rental"><span class="en">Rental address + check-in saved</span><span class="zh">保存住处地址 + 入住信息</span></label></li>
+      <li><label><input type="checkbox" id="p_paddleres"><span class="en">Paddle board reservation confirmed</span><span class="zh">确认桨板预订</span></label></li>
+      <li><label><input type="checkbox" id="p_cash"><span class="en">Cash + cards (parking ~$12)</span><span class="zh">现金 + 银行卡（停车约 $12）</span></label></li>
+      <li><label><input type="checkbox" id="p_boba"><span class="en">🧋 Boba order ready</span><span class="zh">🧋 想好奶茶点什么</span></label></li>
     </ul></div>
 
-    <button class="reset" id="resetBtn">↺ Reset all</button>
+    <button class="reset" id="resetBtn"><span class="en">↺ Reset all</span><span class="zh">↺ 全部重置</span></button>
 
     <div class="endcap">
-      <div class="mark">Three days on the lake</div>
-      <p>38.90°N 120.01°W · Add to Home Screen for the road</p>
+      <div class="mark"><span class="en">Three days on the lake</span><span class="zh">湖畔三日</span></div>
+      <p><span class="en">38.90°N 120.01°W · Add to Home Screen for the road</span><span class="zh">38.90°N 120.01°W · 添加到主屏，路上随时看</span></p>
     </div>
   </section>
 
 </main>
 
-<!-- ============ BOTTOM TAB BAR ============ -->
+<!-- ============ BOTTOM TABS ============ -->
 <nav class="tabbar" role="tablist" aria-label="Main navigation">
   <button class="tab active" role="tab" aria-selected="true" data-tab="t-plan">
-    <svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span>Plan</span></button>
+    <svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span><span class="en">Plan</span><span class="zh">行程</span></span></button>
   <button class="tab" role="tab" aria-selected="false" data-tab="t-map">
-    <svg viewBox="0 0 24 24"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.4"/></svg><span>Map</span></button>
+    <svg viewBox="0 0 24 24"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.4"/></svg><span><span class="en">Map</span><span class="zh">地图</span></span></button>
   <button class="tab" role="tab" aria-selected="false" data-tab="t-food">
-    <svg viewBox="0 0 24 24"><path d="M6 3v7M9 3v7M7.5 10v11M7.5 3v0"/><path d="M16.5 3c-1.4 0-2.5 2-2.5 4.5s1 3.5 2.5 3.5V21"/></svg><span>Food</span></button>
+    <svg viewBox="0 0 24 24"><path d="M6 3v7M9 3v7M7.5 10v11M7.5 3v0"/><path d="M16.5 3c-1.4 0-2.5 2-2.5 4.5s1 3.5 2.5 3.5V21"/></svg><span><span class="en">Food</span><span class="zh">美食</span></span></button>
   <button class="tab" role="tab" aria-selected="false" data-tab="t-lake">
-    <svg viewBox="0 0 24 24"><path d="M2 11c2 0 2-1.6 4-1.6s2 1.6 4 1.6 2-1.6 4-1.6 2 1.6 4 1.6 2-1.6 4-1.6"/><path d="M2 16c2 0 2-1.6 4-1.6s2 1.6 4 1.6 2-1.6 4-1.6 2 1.6 4 1.6 2-1.6 4-1.6"/></svg><span>Lake</span></button>
+    <svg viewBox="0 0 24 24"><path d="M2 11c2 0 2-1.6 4-1.6s2 1.6 4 1.6 2-1.6 4-1.6 2 1.6 4 1.6 2-1.6 4-1.6"/><path d="M2 16c2 0 2-1.6 4-1.6s2 1.6 4 1.6 2-1.6 4-1.6 2 1.6 4 1.6 2-1.6 4-1.6"/></svg><span><span class="en">Lake</span><span class="zh">玩水</span></span></button>
   <button class="tab" role="tab" aria-selected="false" data-tab="t-pack">
-    <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 12l3 3 5-6"/></svg><span>Pack</span></button>
+    <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 12l3 3 5-6"/></svg><span><span class="en">Pack</span><span class="zh">行李</span></span></button>
 </nav>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -503,31 +512,41 @@
     var el = document.getElementById('map');
     if(!el || TahoeMap) return;
     if(typeof L === 'undefined'){
-      el.outerHTML = '<div class="map-fallback">📡 The map needs a connection. Connect &amp; switch tabs — every place still has working map &amp; directions links offline.</div>';
+      el.outerHTML = '<div class="map-fallback"><span class="en">📡 The map needs a connection. Connect &amp; switch tabs — every place still has working map &amp; directions links offline.</span><span class="zh">📡 地图需要联网。连网后切换标签即可——所有地点的地图和导航链接离线仍可用。</span></div>';
       return;
     }
     var cats = {base:{c:'#ef5a2a',e:'🏠'},paddle:{c:'#10788a',e:'🛶'},grocery:{c:'#1f7a54',e:'🛒'},beach:{c:'#d9952f',e:'🏖️'},view:{c:'#6a4fa3',e:'🏔️'},fireworks:{c:'#c43b5e',e:'🎆'},lunch:{c:'#8a5a2b',e:'🍴'},meetup:{c:'#c0457f',e:'🧋'}};
-    var labels = {base:'🏠 Basecamp',paddle:'🛶 Paddle',grocery:'🛒 Groceries',beach:'🏖️ Beaches',view:'🏔️ Views',fireworks:'🎆 Fireworks',lunch:'🍴 Lunch',meetup:'🧋 Meetup'};
+    var labels = {
+      base:'<span class="en">🏠 Basecamp</span><span class="zh">🏠 大本营</span>',
+      paddle:'<span class="en">🛶 Paddle</span><span class="zh">🛶 桨板</span>',
+      grocery:'<span class="en">🛒 Groceries</span><span class="zh">🛒 超市</span>',
+      beach:'<span class="en">🏖️ Beaches</span><span class="zh">🏖️ 海滩</span>',
+      view:'<span class="en">🏔️ Views</span><span class="zh">🏔️ 观景</span>',
+      fireworks:'<span class="en">🎆 Fireworks</span><span class="zh">🎆 烟花</span>',
+      lunch:'<span class="en">🍴 Lunch</span><span class="zh">🍴 午餐</span>',
+      meetup:'<span class="en">🧋 Meetup</span><span class="zh">🧋 集合</span>'
+    };
     var places = [
-      {cat:'base',name:'🏠 Home Base',desc:'Your rental near 1096 Industrial Ave — minutes from the Y.',lat:38.9024888,lon:-120.0099847,q:'1096 Industrial Ave, South Lake Tahoe, CA 96150'},
-      {cat:'paddle',name:'SUP Tahoe (closest)',desc:'871 Emerald Bay Rd. Rentals incl. car racks. ~3–5 min from base.',lat:38.9164821,lon:-120.0083005,q:'SUP Tahoe, 871 Emerald Bay Rd, South Lake Tahoe, CA'},
-      {cat:'paddle',name:'South Tahoe Kayak',desc:'On-the-sand kiosk at Lakeview Commons.',lat:38.9446092,lon:-119.9766477,q:'South Tahoe Kayak, Lakeview Commons, South Lake Tahoe, CA'},
-      {cat:'paddle',name:'Kayak Tahoe',desc:'Walk-up SUP & kayak rentals at El Dorado Beach.',lat:38.9472,lon:-119.9668,q:'Kayak Tahoe, El Dorado Beach, South Lake Tahoe, CA'},
-      {cat:'grocery',name:"Raley's (closest)",desc:'Full supermarket at the Y — ~5 min. Best for the big shop.',lat:38.9120046,lon:-120.0057267,q:"Raley's, Lake Tahoe Blvd, South Lake Tahoe, CA"},
-      {cat:'grocery',name:'Safeway',desc:'Large store + pharmacy off Al Tahoe Blvd. Pickup available.',lat:38.9333,lon:-119.9770,q:'Safeway, 1020 Johnson Ln, South Lake Tahoe, CA'},
-      {cat:'beach',name:'Pope Beach',desc:'Long sandy beach, pines, grills. Paddle + picnic.',lat:38.9388,lon:-120.0386,q:'Pope Beach, South Lake Tahoe, CA'},
-      {cat:'beach',name:'Baldwin Beach',desc:'Easy access, Mt. Tallac views, mellow water.',lat:38.9430,lon:-120.0640,q:'Baldwin Beach, South Lake Tahoe, CA'},
-      {cat:'beach',name:'El Dorado Beach / Lakeview Commons',desc:'In-town, rentals on-site, prime fireworks spot.',lat:38.9477854,lon:-119.9654048,q:'El Dorado Beach, Lakeview Commons, South Lake Tahoe, CA'},
-      {cat:'beach',name:'Nevada Beach',desc:'Wide NV-side beach, sunset & fireworks views.',lat:38.9866,lon:-119.9430,q:'Nevada Beach, Zephyr Cove, NV'},
-      {cat:'view',name:'Emerald Bay / Vikingsholm',desc:'Iconic overlook + ~1 mi trail to the bay & castle.',lat:38.9597395,lon:-120.0883051,q:'Emerald Bay State Park, CA'},
-      {cat:'view',name:'Tallac Historic Site',desc:'Flat, free, shaded forest-and-beach stroll.',lat:38.9412,lon:-120.0545,q:'Tallac Historic Site, South Lake Tahoe, CA'},
-      {cat:'fireworks',name:'Regan Beach',desc:'Lakefront viewing for Lights on the Lake (~9:45 PM).',lat:38.9510,lon:-119.9840,q:'Regan Beach, South Lake Tahoe, CA'},
-      {cat:'lunch',name:'Tower Cafe',desc:'Leafy patio, eclectic menu. 1518 Broadway.',lat:38.5616848,lon:-121.4933630,q:'Tower Cafe, 1518 Broadway, Sacramento, CA'},
-      {cat:'lunch',name:'Old Sacramento Waterfront',desc:'Historic boardwalk + Delta King riverboat.',lat:38.5825,lon:-121.5045,q:'Old Sacramento Waterfront, Sacramento, CA'},
-      {cat:'lunch',name:'Zócalo (Midtown)',desc:'Upbeat Mexican, big patio. 1801 Capitol Ave.',lat:38.5762,lon:-121.4862,q:'Zocalo, 1801 Capitol Ave, Sacramento, CA'},
-      {cat:'lunch',name:'Mikuni Sushi (Midtown)',desc:'Sushi & quick variety in Midtown.',lat:38.5780,lon:-121.4838,q:'Mikuni Sushi, Midtown Sacramento, CA'},
-      {cat:'lunch',name:'Squeeze Inn',desc:'Famous crispy "cheese-skirt" burgers.',lat:38.5570,lon:-121.4290,q:'Squeeze Inn, Sacramento, CA'},
-      {cat:'meetup',name:'🧋 ChaHalo 茶话弄 — Berkeley',desc:'Meetup point. Gather both cars, grab boba to-go, then I-80 E. 2041 University Ave.',lat:37.8721591,lon:-122.2696414,q:'ChaHalo 茶话弄, 2041 University Ave, Berkeley, CA 94704'}
+      {cat:'base',name:'<span class="en">🏠 Home Base</span><span class="zh">🏠 大本营</span>',desc:'Your rental near 1096 Industrial Ave — minutes from the Y.',descZh:'你们在 1096 Industrial Ave 附近的住处——离 Y 路口几分钟。',lat:38.9024888,lon:-120.0099847,q:'1096 Industrial Ave, South Lake Tahoe, CA 96150'},
+      {cat:'paddle',name:'SUP Tahoe',desc:'By the Y. Rentals incl. car racks. ~3–5 min from base.',descZh:'在 Y 路口旁。租赁含车顶架。离大本营约 3–5 分钟。',lat:38.9164821,lon:-120.0083005,q:'SUP Tahoe, 871 Emerald Bay Rd, South Lake Tahoe, CA'},
+      {cat:'paddle',name:'South Tahoe Kayak',desc:'On-the-sand kiosk at Lakeview Commons.',descZh:'Lakeview Commons 沙滩上的摊位。',lat:38.9446092,lon:-119.9766477,q:'South Tahoe Kayak, Lakeview Commons, South Lake Tahoe, CA'},
+      {cat:'paddle',name:'Kayak Tahoe',desc:'Walk-up SUP & kayak rentals at El Dorado Beach.',descZh:'El Dorado 海滩，现场租桨板和皮划艇。',lat:38.9472,lon:-119.9668,q:'Kayak Tahoe, El Dorado Beach, South Lake Tahoe, CA'},
+      {cat:'grocery',name:'<span class="en">Raley\'s (closest)</span><span class="zh">Raley\'s（最近）</span>',desc:'Full supermarket at the Y — ~5 min. Best for the big shop.',descZh:'Y 路口的大超市——约 5 分钟。大采购首选。',lat:38.9120046,lon:-120.0057267,q:"Raley's, Lake Tahoe Blvd, South Lake Tahoe, CA"},
+      {cat:'grocery',name:'Safeway',desc:'Large store + pharmacy off Al Tahoe Blvd. Pickup available.',descZh:'Al Tahoe Blvd 旁的大超市 + 药房。可自取。',lat:38.9333,lon:-119.9770,q:'Safeway, 1020 Johnson Ln, South Lake Tahoe, CA'},
+      {cat:'beach',name:'Pope Beach',desc:'Long sandy beach, pines, grills. Paddle + picnic.',descZh:'长沙滩、松树、烧烤架。划桨 + 野餐。',lat:38.9388,lon:-120.0386,q:'Pope Beach, South Lake Tahoe, CA'},
+      {cat:'beach',name:'Baldwin Beach',desc:'Easy access, Mt. Tallac views, mellow water.',descZh:'好进出，可看 Tallac 山，水面平静。',lat:38.9430,lon:-120.0640,q:'Baldwin Beach, South Lake Tahoe, CA'},
+      {cat:'beach',name:'El Dorado Beach / Lakeview Commons',desc:'In-town, rentals on-site, prime fireworks spot.',descZh:'市区内、现场租赁、看烟花最佳。',lat:38.9477854,lon:-119.9654048,q:'El Dorado Beach, Lakeview Commons, South Lake Tahoe, CA'},
+      {cat:'beach',name:'Nevada Beach',desc:'Wide NV-side beach, sunset & fireworks views.',descZh:'内华达一侧宽沙滩，看日落和烟花。',lat:38.9866,lon:-119.9430,q:'Nevada Beach, Zephyr Cove, NV'},
+      {cat:'view',name:'<span class="en">Emerald Bay / Vikingsholm</span><span class="zh">翡翠湾 / Vikingsholm</span>',desc:'Iconic overlook + ~1 mi trail to the bay & castle.',descZh:'标志性观景台 + 约 1 英里步道下到湖湾和古堡。',lat:38.9597395,lon:-120.0883051,q:'Emerald Bay State Park, CA'},
+      {cat:'view',name:'Tallac Historic Site',desc:'Flat, free, shaded forest-and-beach stroll.',descZh:'平坦、免费、林荫与海滩的散步。',lat:38.9412,lon:-120.0545,q:'Tallac Historic Site, South Lake Tahoe, CA'},
+      {cat:'fireworks',name:'Regan Beach',desc:'Lakefront viewing for Lights on the Lake (~9:45 PM).',descZh:'湖畔看烟花（约 21:45）。',lat:38.9510,lon:-119.9840,q:'Regan Beach, South Lake Tahoe, CA'},
+      {cat:'lunch',name:'Tower Cafe',desc:'Leafy patio, eclectic menu. 1518 Broadway.',descZh:'绿意露台，融合菜系。1518 Broadway。',lat:38.5616848,lon:-121.4933630,q:'Tower Cafe, 1518 Broadway, Sacramento, CA'},
+      {cat:'lunch',name:'Old Sacramento Waterfront',desc:'Historic boardwalk + Delta King riverboat.',descZh:'历史木栈道 + Delta King 游船。',lat:38.5825,lon:-121.5045,q:'Old Sacramento Waterfront, Sacramento, CA'},
+      {cat:'lunch',name:"Joe's Crab Shack",desc:'Riverfront seafood in Old Sacramento — crab buckets & fried baskets.',descZh:'老萨城河畔海鲜——蟹桶和炸物拼盘。',lat:38.5810781,lon:-121.5071348,q:"Joe's Crab Shack, 1210 Front St, Sacramento, CA"},
+      {cat:'lunch',name:'Zócalo (Midtown)',desc:'Upbeat Mexican, big patio. 1801 Capitol Ave.',descZh:'欢快的墨西哥菜，大露台。1801 Capitol Ave。',lat:38.5762,lon:-121.4862,q:'Zocalo, 1801 Capitol Ave, Sacramento, CA'},
+      {cat:'lunch',name:'Mikuni Sushi (Midtown)',desc:'Sushi & quick variety in Midtown.',descZh:'Midtown 的寿司和多样快餐。',lat:38.5780,lon:-121.4838,q:'Mikuni Sushi, Midtown Sacramento, CA'},
+      {cat:'lunch',name:'Squeeze Inn',desc:'Famous crispy "cheese-skirt" burgers.',descZh:'有名的脆「芝士裙边」汉堡。',lat:38.5570,lon:-121.4290,q:'Squeeze Inn, Sacramento, CA'},
+      {cat:'meetup',name:'🧋 ChaHalo 茶话弄 — Berkeley',desc:'Meetup point. Gather both cars, grab boba to-go, then I-80 E. 2041 University Ave.',descZh:'集合点。两车汇合，打包奶茶，再上 I-80 E。2041 University Ave。',lat:37.8721591,lon:-122.2696414,q:'ChaHalo 茶话弄, 2041 University Ave, Berkeley, CA 94704'}
     ];
     var map = L.map('map',{scrollWheelZoom:false});
     TahoeMap = map;
@@ -537,7 +556,8 @@
     var groups={}; Object.keys(cats).forEach(function(k){ groups[k]=L.layerGroup(); });
     places.forEach(function(p){
       var dest=encodeURIComponent(p.q||(p.lat+','+p.lon));
-      var html='<b>'+p.name+'</b><span class="pd">'+p.desc+'</span><a class="dir" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+dest+'">➤ Directions</a>';
+      var html='<b>'+p.name+'</b><span class="pd"><span class="en">'+p.desc+'</span><span class="zh">'+(p.descZh||p.desc)+'</span></span>'
+        +'<a class="dir" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+dest+'">➤ <span class="en">Directions</span><span class="zh">导航</span></a>';
       L.marker([p.lat,p.lon],{icon:icon(p.cat)}).bindPopup(html).addTo(groups[p.cat]);
     });
     var overlays={}; Object.keys(groups).forEach(function(k){ groups[k].addTo(map); overlays[labels[k]]=groups[k]; });
@@ -548,6 +568,22 @@
     document.querySelectorAll('.map-btns button').forEach(function(b){ b.addEventListener('click',function(){ map.__zoom(b.getAttribute('data-z')); }); });
     map.__zoom('tahoe');
   }
+
+  // ============ LANGUAGE TOGGLE ============
+  (function(){
+    var KEY='tahoe-lang';
+    function setLang(l, save){
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.lang = (l==='zh' ? 'zh-CN' : 'en');
+      document.querySelectorAll('.lang').forEach(function(b){ var on=b.dataset.lang===l; b.classList.toggle('active',on); b.setAttribute('aria-pressed', on?'true':'false'); });
+      if(save){ try{ localStorage.setItem(KEY,l); }catch(e){} }
+      window.dispatchEvent(new Event('resize'));
+      if(TahoeMap){ setTimeout(function(){ TahoeMap.invalidateSize(); },60); }
+    }
+    document.querySelectorAll('.lang').forEach(function(b){ b.addEventListener('click',function(){ setLang(b.dataset.lang, true); }); });
+    var s; try{ s=localStorage.getItem(KEY); }catch(e){}
+    setLang(s==='zh'?'zh':'en', false);
+  })();
 
   // ============ TAB BAR ============
   (function(){
@@ -574,7 +610,7 @@
     show(screens.some(function(s){return s.id===start;})?start:'t-plan', false);
   })();
 
-  // ============ SEGMENTED CONTROLS ============
+  // ============ SEGMENTED ============
   (function(){
     document.querySelectorAll('.segmented').forEach(function(seg){
       var btns = Array.prototype.slice.call(seg.querySelectorAll('.seg'));
@@ -590,7 +626,7 @@
     });
   })();
 
-  // ============ ITINERARY DECK ============
+  // ============ DECK ============
   (function(){
     var track=document.getElementById('deck'); if(!track) return;
     var cards=Array.prototype.slice.call(track.querySelectorAll('.day'));
@@ -617,7 +653,7 @@
     function bars(){ document.querySelectorAll('.cg').forEach(function(g){ var ins=g.querySelectorAll('input'),done=0; Array.prototype.forEach.call(ins,function(i){ if(i.checked)done++; }); var pct=ins.length?Math.round(done/ins.length*100):0; var bar=g.querySelector('.cg-bar>i'); if(bar)bar.style.width=pct+'%'; var l=g.querySelector('.pct'); if(l)l.textContent=pct+'%'; }); }
     boxes.forEach(function(b){ if(saved[b.id])b.checked=true; b.addEventListener('change',function(){ save(); bars(); }); });
     bars();
-    var rb=document.getElementById('resetBtn'); if(rb)rb.addEventListener('click',function(){ if(!confirm('Uncheck everything?'))return; boxes.forEach(function(b){ b.checked=false; }); save(); bars(); });
+    var rb=document.getElementById('resetBtn'); if(rb)rb.addEventListener('click',function(){ if(!confirm('Reset all? / 全部重置？'))return; boxes.forEach(function(b){ b.checked=false; }); save(); bars(); });
   })();
 </script>
 </body>
