@@ -83,6 +83,18 @@
   .chips{display:flex; flex-wrap:wrap; gap:7px}
   .chips span{font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:#d9efee; background:rgba(127,196,207,.16); border:1px solid rgba(127,196,207,.28); padding:6px 10px; border-radius:8px}
 
+  /* ---------- WEATHER ---------- */
+  .wx-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px}
+  .wx-tile{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:11px 4px 9px; text-align:center}
+  .wx-day{font-family:var(--mono); font-size:10px; letter-spacing:.05em; color:var(--granite); text-transform:uppercase}
+  .wx-ico{font-size:25px; line-height:1; margin:7px 0 4px}
+  .wx-cond{font-size:11px; color:var(--granite); margin-bottom:6px; min-height:14px}
+  .wx-temp{font-family:var(--display); font-size:16px; color:var(--ink); font-weight:700}
+  .wx-temp .lo{color:var(--granite); font-weight:400}
+  .wx-sub{font-family:var(--mono); font-size:10px; color:var(--granite); margin-top:4px}
+  .wx-status{font-size:13.5px; color:var(--granite); margin:12px 0 0; line-height:1.6}
+  .wx-status a{font-weight:700}
+
   /* ---------- CARDS ---------- */
   .card{background:var(--snow); border:1px solid var(--line); border-radius:16px; padding:16px; box-shadow:var(--shadow); position:relative; margin-top:14px}
   .card h3{font-size:17px; letter-spacing:-.01em; margin:0 0 2px}
@@ -224,6 +236,15 @@
       <p class="eyebrow"><span class="en">Field dossier · South Lake Tahoe</span><span class="zh">行程档案 · 南太浩湖</span></p>
       <h1><span class="en">Three days<br>on the <em>lake</em></span><span class="zh"><em>湖畔</em>三日</span></h1>
       <div class="chips"><span>JUL 3–5</span><span>6,237 FT</span><span>~190 MI</span><span>WATER 63°F</span></div>
+    </div>
+
+    <div class="card">
+      <span class="pill lake"><span class="en">Forecast</span><span class="zh">天气预报</span></span>
+      <h3><span class="en">Lake conditions · Jul 3–5</span><span class="zh">湖区天气 · 7/3–5</span></h3>
+      <div class="wx-grid" id="wxGrid">
+        <p class="wx-status" style="grid-column:1/-1"><span class="en">Loading live forecast…</span><span class="zh">正在加载实时天气…</span></p>
+      </div>
+      <p class="addr"><span class="en">Live · °F · wind mph · auto-updates near the trip · Open-Meteo</span><span class="zh">实时 · °F · 风速 mph · 临近出行自动更新 · 来自 Open-Meteo</span></p>
     </div>
 
     <div class="card">
@@ -654,6 +675,47 @@
     boxes.forEach(function(b){ if(saved[b.id])b.checked=true; b.addEventListener('change',function(){ save(); bars(); }); });
     bars();
     var rb=document.getElementById('resetBtn'); if(rb)rb.addEventListener('click',function(){ if(!confirm('Reset all? / 全部重置？'))return; boxes.forEach(function(b){ b.checked=false; }); save(); bars(); });
+  })();
+
+  // ============ WEATHER (live, Plan tab) ============
+  (function(){
+    var grid=document.getElementById('wxGrid'); if(!grid) return;
+    var DAYS=[{en:'Fri · 3',zh:'周五 3'},{en:'Sat · 4',zh:'周六 4'},{en:'Sun · 5',zh:'周日 5'}];
+    function wcode(c){
+      var m={0:['☀️','Clear','晴'],1:['🌤️','Fair','晴间'],2:['⛅','Clouds','多云'],3:['☁️','Cloudy','阴'],
+        45:['🌫️','Fog','雾'],48:['🌫️','Fog','雾'],51:['🌦️','Drizzle','毛毛雨'],53:['🌦️','Drizzle','毛毛雨'],55:['🌦️','Drizzle','毛毛雨'],
+        61:['🌧️','Rain','小雨'],63:['🌧️','Rain','雨'],65:['🌧️','Heavy rain','大雨'],
+        71:['🌨️','Snow','雪'],73:['🌨️','Snow','雪'],75:['🌨️','Snow','大雪'],
+        80:['🌦️','Showers','阵雨'],81:['🌦️','Showers','阵雨'],82:['🌦️','Showers','强阵雨'],
+        95:['⛈️','Storm','雷雨'],96:['⛈️','Storm','雷暴'],99:['⛈️','Storm','雷暴']};
+      var x=m[c]||['🌡️','—','—']; return {e:x[0],en:x[1],zh:x[2]};
+    }
+    function fail(){
+      grid.innerHTML='<p class="wx-status" style="grid-column:1/-1"><span class="en">Forecast shows closer to the trip, or you’re offline. <a target="_blank" rel="noopener" href="https://forecast.weather.gov/MapClick.php?lat=38.93&lon=-119.98">Open weather.gov →</a></span><span class="zh">临近出行或离线时不可用。<a target="_blank" rel="noopener" href="https://forecast.weather.gov/MapClick.php?lat=38.93&lon=-119.98">查看 weather.gov →</a></span></p>';
+    }
+    function render(data){
+      var d=data&&data.daily;
+      if(!d||!d.time||!d.time.length){ fail(); return; }
+      var html='';
+      for(var i=0;i<d.time.length&&i<3;i++){
+        var w=wcode(d.weather_code[i]);
+        var hi=Math.round(d.temperature_2m_max[i]), lo=Math.round(d.temperature_2m_min[i]);
+        var pp=d.precipitation_probability_max[i], wind=Math.round(d.wind_speed_10m_max[i]);
+        var lab=DAYS[i]||{en:d.time[i],zh:d.time[i]};
+        html+='<div class="wx-tile">'
+          +'<div class="wx-day"><span class="en">'+lab.en+'</span><span class="zh">'+lab.zh+'</span></div>'
+          +'<div class="wx-ico">'+w.e+'</div>'
+          +'<div class="wx-cond"><span class="en">'+w.en+'</span><span class="zh">'+w.zh+'</span></div>'
+          +'<div class="wx-temp">'+hi+'° <span class="lo">'+lo+'°</span></div>'
+          +'<div class="wx-sub">💧'+(pp==null?'–':pp+'%')+' · 💨'+wind+'</div>'
+          +'</div>';
+      }
+      grid.innerHTML=html;
+    }
+    var url='https://api.open-meteo.com/v1/forecast?latitude=38.9025&longitude=-120.0100'
+      +'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max'
+      +'&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FLos_Angeles&start_date=2026-07-03&end_date=2026-07-05';
+    try{ fetch(url).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(render).catch(fail); }catch(e){ fail(); }
   })();
 </script>
 </body>
